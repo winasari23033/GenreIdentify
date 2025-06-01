@@ -17,7 +17,7 @@ const genreResults = document.getElementById('genreResults');
 // Enhanced genre database with more comprehensive characteristics
 const genreDatabase = {
     'Pop': { 
-        tempo: [110, 140], 
+        tempo: [110, 130], 
         energy: [0.6, 0.85], 
         valence: [0.6, 0.9],
         spectralCentroid: [1500, 3000],
@@ -26,7 +26,7 @@ const genreDatabase = {
         mfccVariance: [0.3, 0.7]
     },
     'Rock': { 
-        tempo: [110, 160], 
+        tempo: [110, 140], 
         energy: [0.7, 0.95], 
         valence: [0.4, 0.8],
         spectralCentroid: [2000, 4000],
@@ -35,7 +35,7 @@ const genreDatabase = {
         mfccVariance: [0.4, 0.8]
     },
     'Alternative': {
-        tempo: [90, 150],
+        tempo: [90, 120],
         energy: [0.5, 0.85],
         valence: [0.3, 0.7],
         spectralCentroid: [1800, 3500],
@@ -44,7 +44,7 @@ const genreDatabase = {
         mfccVariance: [0.35, 0.75]
     },
     'Indie': {
-        tempo: [85, 140],
+        tempo: [85, 120],
         energy: [0.4, 0.75],
         valence: [0.4, 0.8],
         spectralCentroid: [1600, 3200],
@@ -53,7 +53,7 @@ const genreDatabase = {
         mfccVariance: [0.3, 0.65]
     },
     'R&B': {
-        tempo: [70, 120],
+        tempo: [70, 100],
         energy: [0.5, 0.8],
         valence: [0.5, 0.85],
         spectralCentroid: [1200, 2800],
@@ -62,7 +62,7 @@ const genreDatabase = {
         mfccVariance: [0.25, 0.6]
     },
     'Pop Punk': {
-        tempo: [150, 200],
+        tempo: [160, 200],
         energy: [0.8, 0.95],
         valence: [0.5, 0.85],
         spectralCentroid: [2200, 4500],
@@ -76,11 +76,11 @@ const genreDatabase = {
         valence: [0.3, 0.7],
         spectralCentroid: [1000, 2500],
         spectralRolloff: [0.6, 0.85],
-        zcr: [0.08, 0.2],
+        zcr: [0.05, 0.2],
         mfccVariance: [0.4, 0.8]
     },
     'Electronic': { 
-        tempo: [120, 180], 
+        tempo: [120, 140], 
         energy: [0.7, 0.95], 
         valence: [0.5, 0.9],
         spectralCentroid: [2500, 5000],
@@ -89,35 +89,26 @@ const genreDatabase = {
         mfccVariance: [0.5, 0.9]
     },
     'Dance': {
-        tempo: [120, 140],
+        tempo: [120, 130],
         energy: [0.8, 0.95],
-        valence: [0.7, 0.95],
+        valence: [0.60, 0.95],
         spectralCentroid: [2000, 4000],
         spectralRolloff: [0.85, 0.95],
         zcr: [0.12, 0.25],
         mfccVariance: [0.4, 0.8]
     },
-    'Jazz': { 
-        tempo: [60, 200], 
-        energy: [0.3, 0.8], 
-        valence: [0.4, 0.8],
-        spectralCentroid: [1800, 3500],
-        spectralRolloff: [0.7, 0.9],
-        zcr: [0.05, 0.15],
-        mfccVariance: [0.6, 0.9]
-    },
     'Classical': { 
         tempo: [60, 140], 
         energy: [0.2, 0.7], 
         valence: [0.3, 0.8],
-        spectralCentroid: [1500, 4000],
+        spectralCentroid: [1200, 4000],
         spectralRolloff: [0.75, 0.9],
         zcr: [0.03, 0.1],
         mfccVariance: [0.7, 0.95]
     },
     'Blues': { 
         tempo: [60, 120], 
-        energy: [0.3, 0.7], 
+        energy: [0.3, 0.75], 
         valence: [0.2, 0.6],
         spectralCentroid: [1200, 2500],
         spectralRolloff: [0.65, 0.8],
@@ -128,14 +119,14 @@ const genreDatabase = {
         tempo: [80, 140], 
         energy: [0.4, 0.8], 
         valence: [0.4, 0.8],
-        spectralCentroid: [1400, 2800],
+        spectralCentroid: [1200, 2800],
         spectralRolloff: [0.7, 0.85],
         zcr: [0.06, 0.15],
         mfccVariance: [0.35, 0.65]
     },
     'Reggae': { 
         tempo: [60, 90], 
-        energy: [0.4, 0.7], 
+        energy: [0.5, 0.75], 
         valence: [0.6, 0.9],
         spectralCentroid: [1300, 2600],
         spectralRolloff: [0.65, 0.8],
@@ -143,14 +134,55 @@ const genreDatabase = {
         mfccVariance: [0.3, 0.6]
     },
     'Metal': { 
-        tempo: [120, 200], 
-        energy: [0.8, 1.0], 
+        tempo: [70, 200], 
+        energy: [0.5, 1.0], 
         valence: [0.1, 0.5],
         spectralCentroid: [2500, 5500],
         spectralRolloff: [0.85, 0.95],
         zcr: [0.2, 0.4],
         mfccVariance: [0.6, 0.95]
-    }
+    },
+        'K-Pop': {
+        tempo: [100, 140],
+        energy: [0.5, 0.9],
+        valence: [0.5, 0.9],
+        spectralCentroid: [1800, 3500],
+        spectralRolloff: [0.75, 0.9],
+        zcr: [0.08, 0.18],
+        mfccVariance: [0.4, 0.8]
+    },
+    // 1) Jazz Ballad (slow, mellow)
+  'Jazz Ballad': {
+    tempo: [60, 90],           // Adagio–Andante (60–90 BPM)
+    energy: [0.3, 0.5],        // Mellow, low‐energy
+    valence: [0.4, 0.6],       // Cenderung netral–sedih
+    spectralCentroid: [1400, 2800],
+    spectralRolloff: [0.65, 0.85],
+    zcr: [0.04, 0.12],
+    mfccVariance: [0.6, 0.85]
+  },
+
+  // 2) Jazz Swing/Bebop (up-tempo, dinamis)
+  'Jazz Swing/Bebop': {
+    tempo: [140, 180],         // Bebop/Swing cepat (140–180 BPM)
+    energy: [0.5, 0.8],        // Medium–high energy karena improvisasi cepat
+    valence: [0.5, 0.8],       // Umumnya lebih “upbeat”
+    spectralCentroid: [2000, 3600],
+    spectralRolloff: [0.75, 0.9],
+    zcr: [0.08, 0.18],
+    mfccVariance: [0.7, 0.9]
+  },
+
+  'Jazz Fusion': {
+    tempo: [90, 180],          // Fusion: dari mid-tempo hingga up-tempo
+    energy: [0.4, 0.85],       // Bervariasi, kadang mellow kadang energetic
+    valence: [0.4, 0.8],       // Netral hingga sedikit ceria
+    spectralCentroid: [1800, 4000],
+    spectralRolloff: [0.7, 0.9],
+    zcr: [0.05, 0.15],
+    mfccVariance: [0.65, 0.95]
+  },
+
 };
 
 // Initialize
