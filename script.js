@@ -34,15 +34,38 @@ const genreDatabase = {
         zcr: [0.1, 0.25],
         mfccVariance: [0.4, 0.8]
     },
-    'Alternative': {
-        tempo: [90, 150],
-        energy: [0.45, 0.85],
-        valence: [0.3, 0.7],
-        spectralCentroid: [1800, 3500],
-        spectralRolloff: [0.7, 0.9],
-        zcr: [0.08, 0.2],
-        mfccVariance: [0.35, 0.75]
-    },
+   'Alternative Rock': {
+    tempo: [100, 150],            // Mid-tempo hingga uptempo
+    energy: [0.6, 0.85],          // Lebih energetic daripada Indie
+    valence: [0.4, 0.7],          // Bisa agak “gelap” hingga sedikit upbeat
+    spectralCentroid: [1900, 3600],
+    spectralRolloff: [0.75, 0.9],
+    zcr: [0.1, 0.22],             // Transien gitar elektrik
+    mfccVariance: [0.45, 0.8]
+  },
+
+  // 2) Indie Alternative
+  'Indie Alternative': {
+    tempo: [80, 140],             // Bisa very slow hingga mid-tempo
+    energy: [0.4, 0.7],           // Lebih mellow, produksi cenderung lo-fi
+    valence: [0.3, 0.65],         // Sering nuansa introspektif/melankolis
+    spectralCentroid: [1600, 3200],
+    spectralRolloff: [0.7, 0.88],
+    zcr: [0.06, 0.18],            // ZCR sedang, tergantung produksi akustik/elektronik
+    mfccVariance: [0.35, 0.7]
+  },
+
+  // 3) Post-Punk / Shoegaze
+  'Post-Punk / Shoegaze': {
+    tempo: [70, 120],             // Dari slow post-punk hingga mid-tempo shoegaze
+    energy: [0.45, 0.75],         // Agak gelap, tetapi tidak se-energetic Rock/Rock alternatif mainstream
+    valence: [0.2, 0.5],          // Cenderung “muram” atau atmosferik
+    spectralCentroid: [1500, 3000],
+    spectralRolloff: [0.7, 0.88],
+    zcr: [0.05, 0.15],            // Noise gitar ber-reverb membuat ZCR tidak terlalu tinggi
+    mfccVariance: [0.4, 0.75]
+  },
+
     'Indie': {
         tempo: [85, 120],
         energy: [0.4, 0.75],
