@@ -1,95 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Genre Classifier</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Music Genre Detector</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎵 Music Genre Classifier</h1>
-            <p>Upload an audio file to automatically detect its genre using AI-powered analysis</p>
-        </header>
-
-        <main>
-            <!-- Upload Section -->
-            <section class="upload-section">
-                <div id="uploadArea" class="upload-area">
-                    <div class="upload-icon">📁</div>
-                    <h3>Drop your audio file here</h3>
-                    <p>or <span class="browse-text">browse</span> to select</p>
-                    <small>Supports MP3, WAV, M4A, OGG formats</small>
+        <div class="header">
+            <h1>🎵 AI Music Genre Detector</h1>
+            <p>Upload file audio dan biarkan AI mendeteksi genre musiknya</p>
+        </div>
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">🎧</div>
+            <div class="upload-text">Klik atau drag & drop file audio di sini</div>
+            <div class="file-types">Mendukung: MP3, WAV, OGG, M4A</div>
+            <input type="file" id="audioFile" accept="audio/*">
+        </div>
+        <div class="audio-player" id="audioPlayer">
+            <div class="audio-info">
+                <div class="audio-icon">🎵</div>
+                <div class="audio-details">
+                    <h3 id="fileName"></h3>
+                    <p id="fileSize"></p>
                 </div>
-                <input type="file" id="audioFile" accept="audio/*" hidden>
-            </section>
-
-            <!-- File Info Section -->
-            <section id="audioPlayer" class="audio-player" style="display: none;">
-                <div class="file-info">
-                    <div class="file-details">
-                        <span class="file-icon">🎵</span>
-                        <div>
-                            <div id="fileName" class="file-name">No file selected</div>
-                            <div id="fileSize" class="file-size">0 Bytes</div>
-                        </div>
+            </div>
+            <audio controls id="audioPreview" style="width: 100%;"></audio>
+        </div>
+        <button class="analyze-btn" id="analyzeBtn" disabled>
+            🤖 Analisis Genre dengan AI
+        </button>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI sedang menganalisis audio...</p>
+        </div>
+        <div class="results" id="results">
+            <h2>🎯 Hasil Deteksi Genre</h2>
+            <div id="genreResults"></div>
+            
+            <div class="audio-features">
+                <h3>📊 Fitur Audio yang Dianalisis</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-value" id="tempo">--</div>
+                        <div class="feature-label">BPM</div>
                     </div>
-                    <audio id="audioPreview" controls preload="metadata"></audio>
-                </div>
-                <button id="analyzeBtn" class="analyze-btn" disabled>
-                    <span class="btn-icon">🔍</span>
-                    Analyze Genre
-                </button>
-            </section>
-
-            <!-- Loading Section -->
-            <section id="loading" class="loading-section" style="display: none;">
-                <div class="loading-spinner"></div>
-                <p>Analyzing audio features...</p>
-                <small>This may take a few moments</small>
-            </section>
-
-            <!-- Results Section -->
-            <section id="results" class="results-section" style="display: none;">
-                <h2>🎯 Analysis Results</h2>
-                
-                <!-- Genre Classification -->
-                <div class="results-card">
-                    <h3>Genre Classification</h3>
-                    <div id="genreResults" class="genre-results"></div>
-                </div>
-
-                <!-- Audio Features -->
-                <div class="results-card">
-                    <h3>Audio Features</h3>
-                    <div class="features-grid">
-                        <div class="feature-item">
-                            <div class="feature-label">Tempo</div>
-                            <div class="feature-value">
-                                <span id="tempo">0</span> BPM
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-label">Energy</div>
-                            <div class="feature-value" id="energy">0%</div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-label">Valence</div>
-                            <div class="feature-value" id="valence">0%</div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-label">Danceability</div>
-                            <div class="feature-value" id="danceability">0%</div>
-                        </div>
+                    <div class="feature-item">
+                        <div class="feature-value" id="energy">--</div>
+                        <div class="feature-label">Energy</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-value" id="valence">--</div>
+                        <div class="feature-label">Valence</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-value" id="danceability">--</div>
+                        <div class="feature-label">Danceability</div>
                     </div>
                 </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>Built with Web Audio API • Supports multiple audio formats</p>
-        </footer>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
