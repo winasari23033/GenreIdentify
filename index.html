@@ -3,91 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Genre Classifier</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Music Genre Classifier</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1>🎵 Audio Genre Classifier</h1>
-            <p>Upload an audio file to analyze its musical genre using advanced AI algorithms</p>
+        <header>
+            <h1>🎵 Music Genre Classifier</h1>
+            <p>Upload an audio file to automatically detect its genre using AI-powered analysis</p>
         </header>
 
-        <main class="main-content">
+        <main>
             <!-- Upload Section -->
             <section class="upload-section">
-                <div class="upload-area" id="uploadArea">
+                <div id="uploadArea" class="upload-area">
                     <div class="upload-icon">📁</div>
-                    <h3>Choose or Drop Audio File</h3>
-                    <p>Supports MP3, WAV, OGG, M4A, FLAC (max 50MB)</p>
-                    <button class="upload-btn">Browse Files</button>
-                    <input type="file" id="audioFile" accept="audio/*" hidden>
+                    <h3>Drop your audio file here</h3>
+                    <p>or <span class="browse-text">browse</span> to select</p>
+                    <small>Supports MP3, WAV, M4A, OGG formats</small>
                 </div>
+                <input type="file" id="audioFile" accept="audio/*" hidden>
             </section>
 
             <!-- File Info Section -->
-            <section class="file-info" id="fileInfo" style="display: none;">
-                <div class="file-details">
-                    <div class="file-icon">🎵</div>
-                    <div class="file-metadata">
-                        <h4 id="fileName">filename.mp3</h4>
-                        <div class="file-stats">
-                            <span id="fileSize">0 MB</span>
-                            <span id="audioDuration">0:00</span>
+            <section id="audioPlayer" class="audio-player" style="display: none;">
+                <div class="file-info">
+                    <div class="file-details">
+                        <span class="file-icon">🎵</span>
+                        <div>
+                            <div id="fileName" class="file-name">No file selected</div>
+                            <div id="fileSize" class="file-size">0 Bytes</div>
                         </div>
                     </div>
+                    <audio id="audioPreview" controls preload="metadata"></audio>
                 </div>
-                
-                <!-- Audio Player -->
-                <div class="audio-player" id="audioPlayer" style="display: none;">
-                    <audio controls id="audioPreview" preload="metadata">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-
-                <!-- Analyze Button -->
-                <button class="analyze-btn" id="analyzeBtn" disabled>
+                <button id="analyzeBtn" class="analyze-btn" disabled>
                     <span class="btn-icon">🔍</span>
                     Analyze Genre
                 </button>
             </section>
 
             <!-- Loading Section -->
-            <section class="loading-section" id="loading" style="display: none;">
+            <section id="loading" class="loading-section" style="display: none;">
                 <div class="loading-spinner"></div>
-                <h3>Analyzing Your Audio</h3>
-                <p>This may take a few moments...</p>
+                <p>Analyzing audio features...</p>
+                <small>This may take a few moments</small>
             </section>
 
             <!-- Results Section -->
-            <section class="results-section" id="results" style="display: none;">
-                <h2>🎯 Genre Analysis Results</h2>
-                <div id="genreResults"></div>
+            <section id="results" class="results-section" style="display: none;">
+                <h2>🎯 Analysis Results</h2>
                 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="secondary-btn" onclick="location.reload()">
-                        <span class="btn-icon">🔄</span>
-                        Analyze Another File
-                    </button>
-                    <button class="secondary-btn" onclick="window.print()">
-                        <span class="btn-icon">📄</span>
-                        Save Results
-                    </button>
+                <!-- Genre Classification -->
+                <div class="results-card">
+                    <h3>Genre Classification</h3>
+                    <div id="genreResults" class="genre-results"></div>
+                </div>
+
+                <!-- Audio Features -->
+                <div class="results-card">
+                    <h3>Audio Features</h3>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-label">Tempo</div>
+                            <div class="feature-value">
+                                <span id="tempo">0</span> BPM
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-label">Energy</div>
+                            <div class="feature-value" id="energy">0%</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-label">Valence</div>
+                            <div class="feature-value" id="valence">0%</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-label">Danceability</div>
+                            <div class="feature-value" id="danceability">0%</div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2024 Audio Genre Classifier | Built with Web Audio API & Machine Learning</p>
-            <div class="shortcuts">
-                <span>Shortcuts: Ctrl+O (Open File) | Ctrl+Enter (Analyze)</span>
-            </div>
+        <footer>
+            <p>Built with Web Audio API • Supports multiple audio formats</p>
         </footer>
     </div>
 
-    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
