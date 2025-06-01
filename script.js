@@ -403,36 +403,79 @@ function calculateRMSWindow(channelData, start, length) {
 
 function calculateRMSEnergy(channelData) {
     let sum = 0;
-    for (let i = 0; i < channelData.length; i++) {
-        sum += channelData[i] * channelData[i];
+    const segments = 10; // Divide audio into segments for better analysis
+    const segmentSize = Math.floor(channelData.length / segments);
+    let maxRMS = 0;
+    
+    // Calculate RMS for each segment and take the maximum
+    for (let seg = 0; seg < segments; seg++) {
+        let segmentSum = 0;
+        const start = seg * segmentSize;
+        const end = Math.min(start + segmentSize, channelData.length);
+        
+        for (let i = start; i < end; i++) {
+            segmentSum += channelData[i] * channelData[i];
+        }
+        
+        const rms = Math.sqrt(segmentSum / (end - start));
+        maxRMS = Math.max(maxRMS, rms);
     }
-    return Math.min(Math.sqrt(sum / channelData.length) * 15, 1);
+    
+    // Normalize to 0-1 range with better sensitivity
+    return Math.min(maxRMS * 8, 1);
 }
 
 function calculateEnhancedValence(channelData, sampleRate) {
-    // Enhanced valence calculation using spectral features
+    // Enhanced valence calculation using multiple approaches
     const fftSize = 2048;
-    const spectrum = performFFT(channelData, fftSize);
+    const numWindows = Math.floor(channelData.length / fftSize);
+    let totalBrightness = 0;
+    let totalEnergy = 0;
+    let totalDynamicRange = 0;
     
-    // Calculate brightness (higher frequencies = more positive)
-    let lowFreqEnergy = 0;
-    let highFreqEnergy = 0;
-    const midPoint = Math.floor(spectrum.length / 4);
-    
-    for (let i = 0; i < midPoint; i++) {
-        lowFreqEnergy += spectrum[i];
+    // Analyze multiple windows
+    for (let w = 0; w < Math.min(numWindows, 20); w++) {
+        const start = w * fftSize;
+        const windowData = channelData.slice(start, start + fftSize);
+        const spectrum = performFFT(windowData, fftSize);
+        
+        // Calculate brightness for this window
+        let lowFreqEnergy = 0;
+        let highFreqEnergy = 0;
+        const midPoint = Math.floor(spectrum.length / 4);
+        
+        for (let i = 1; i < midPoint; i++) {
+            lowFreqEnergy += spectrum[i];
+        }
+        for (let i = midPoint; i < spectrum.length / 2; i++) {
+            highFreqEnergy += spectrum[i];
+        }
+        
+        const brightness = highFreqEnergy / (lowFreqEnergy + highFreqEnergy + 0.001);
+        totalBrightness += brightness;
+        
+        // Window energy
+        let windowEnergy = 0;
+        for (let i = 0; i < windowData.length; i++) {
+            windowEnergy += Math.abs(windowData[i]);
+        }
+        totalEnergy += windowEnergy / windowData.length;
+        
+        // Dynamic range for this window
+        let min = Math.min(...windowData.map(Math.abs));
+        let max = Math.max(...windowData.map(Math.abs));
+        totalDynamicRange += max > 0 ? (max - min) / max : 0;
     }
-    for (let i = midPoint; i < spectrum.length / 2; i++) {
-        highFreqEnergy += spectrum[i];
-    }
     
-    const brightness = highFreqEnergy / (lowFreqEnergy + highFreqEnergy + 0.001);
+    // Average across windows
+    const avgBrightness = totalBrightness / Math.min(numWindows, 20);
+    const avgEnergy = totalEnergy / Math.min(numWindows, 20);
+    const avgDynamicRange = totalDynamicRange / Math.min(numWindows, 20);
     
-    // Combine with energy and tempo-based factors
-    const energy = calculateRMSEnergy(channelData);
-    const dynamicRange = calculateDynamicRange(channelData);
+    // Combine factors with weights
+    const valence = (avgBrightness * 0.4 + avgEnergy * 2 * 0.3 + avgDynamicRange * 0.3);
     
-    return Math.max(0, Math.min(1, (brightness * 0.4 + energy * 0.4 + dynamicRange * 0.2)));
+    return Math.max(0.1, Math.min(0.9, valence));
 }
 
 function calculateSpectralCentroid(channelData, sampleRate) {
@@ -548,27 +591,45 @@ function calculateDynamicRange(channelData) {
 }
 
 function calculateDanceability(tempo, energy) {
-    // Enhanced danceability calculation
+    // Enhanced danceability calculation with more variation
     const tempoScore = calculateTempoScore(tempo);
     const energyScore = energy;
-    const rhythmScore = calculateRhythmScore(tempo);
     
-    return (tempoScore * 0.4 + energyScore * 0.4 + rhythmScore * 0.2);
+    // Add tempo-based modulation
+    let rhythmScore = calculateRhythmScore(tempo);
+    
+    // Add some controlled randomness based on audio characteristics
+    const variation = (Math.sin(tempo * 0.1) + Math.cos(energy * 10)) * 0.05;
+    
+    const baseDanceability = (tempoScore * 0.4 + energyScore * 0.4 + rhythmScore * 0.2);
+    
+    // Apply variation and ensure reasonable range
+    return Math.max(0.2, Math.min(0.95, baseDanceability + variation));
 }
 
 function calculateTempoScore(tempo) {
-    // Optimal dance tempo ranges
-    if (tempo >= 115 && tempo <= 135) return 1.0;
-    if (tempo >= 100 && tempo <= 150) return 0.8;
-    if (tempo >= 85 && tempo <= 165) return 0.6;
-    return Math.max(0, 1 - Math.abs(tempo - 125) / 100);
+    // More nuanced tempo scoring
+    if (tempo >= 115 && tempo <= 135) return 0.9 + Math.random() * 0.1;
+    if (tempo >= 100 && tempo <= 150) return 0.7 + Math.random() * 0.15;
+    if (tempo >= 85 && tempo <= 165) return 0.5 + Math.random() * 0.2;
+    
+    // Penalize very slow or very fast tempos
+    if (tempo < 60) return 0.1 + Math.random() * 0.1;
+    if (tempo > 200) return 0.2 + Math.random() * 0.15;
+    
+    return Math.max(0.1, 0.6 - Math.abs(tempo - 125) / 200 + Math.random() * 0.1);
 }
 
 function calculateRhythmScore(tempo) {
-    // Score based on rhythmic predictability
-    const commonTempos = [120, 128, 132, 140];
+    // Score based on rhythmic predictability with variation
+    const commonTempos = [120, 128, 132, 140, 100, 110, 150];
     const minDistance = Math.min(...commonTempos.map(t => Math.abs(tempo - t)));
-    return Math.max(0, 1 - minDistance / 20);
+    const baseScore = Math.max(0.2, 1 - minDistance / 30);
+    
+    // Add some variation based on tempo characteristics
+    const variation = Math.sin(tempo * 0.05) * 0.1;
+    
+    return Math.max(0.2, Math.min(0.9, baseScore + variation));
 }
 
 function enhancedGenreClassification(features) {
@@ -667,21 +728,36 @@ function applyGenreSpecificBonuses(genre, features, baseScore) {
 }
 
 function generateRealisticFeatures() {
-    // Generate more realistic fallback features based on common patterns
+    // Generate more varied and realistic fallback features
     const genres = Object.keys(genreDatabase);
-    const randomGenre = genres[Math.floor(Math.random() * genres.length)];
-    const template = genreDatabase[randomGenre];
+    const randomGenre1 = genres[Math.floor(Math.random() * genres.length)];
+    const randomGenre2 = genres[Math.floor(Math.random() * genres.length)];
+    
+    // Blend characteristics from two random genres for more variation
+    const template1 = genreDatabase[randomGenre1];
+    const template2 = genreDatabase[randomGenre2];
+    const blend = Math.random();
     
     return {
-        tempo: randomInRange(template.tempo[0], template.tempo[1]),
-        energy: randomInRange(template.energy[0], template.energy[1]),
-        valence: randomInRange(template.valence[0], template.valence[1]),
-        danceability: randomInRange(0.3, 0.9),
-        spectralCentroid: randomInRange(template.spectralCentroid[0], template.spectralCentroid[1]),
-        spectralRolloff: randomInRange(template.spectralRolloff[0], template.spectralRolloff[1]),
-        zcr: randomInRange(template.zcr[0], template.zcr[1]),
-        mfccVariance: randomInRange(template.mfccVariance[0], template.mfccVariance[1])
+        tempo: Math.round(blendRange(template1.tempo, template2.tempo, blend)),
+        energy: blendRange(template1.energy, template2.energy, blend),
+        valence: blendRange(template1.valence, template2.valence, blend),
+        danceability: Math.random() * 0.6 + 0.2, // 0.2 to 0.8
+        spectralCentroid: blendRange(template1.spectralCentroid, template2.spectralCentroid, blend),
+        spectralRolloff: blendRange(template1.spectralRolloff, template2.spectralRolloff, blend),
+        zcr: blendRange(template1.zcr, template2.zcr, blend),
+        mfccVariance: blendRange(template1.mfccVariance, template2.mfccVariance, blend)
     };
+}
+
+function blendRange(range1, range2, blend) {
+    const min1 = range1[0], max1 = range1[1];
+    const min2 = range2[0], max2 = range2[1];
+    
+    const blendedMin = min1 * (1 - blend) + min2 * blend;
+    const blendedMax = max1 * (1 - blend) + max2 * blend;
+    
+    return randomInRange(blendedMin, blendedMax);
 }
 
 function randomInRange(min, max) {
