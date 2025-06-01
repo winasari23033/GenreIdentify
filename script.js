@@ -35,8 +35,8 @@ const genreDatabase = {
         mfccVariance: [0.4, 0.8]
     },
     'Alternative': {
-        tempo: [90, 120],
-        energy: [0.5, 0.85],
+        tempo: [90, 150],
+        energy: [0.45, 0.85],
         valence: [0.3, 0.7],
         spectralCentroid: [1800, 3500],
         spectralRolloff: [0.7, 0.9],
