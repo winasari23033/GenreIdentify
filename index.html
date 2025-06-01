@@ -12,14 +12,14 @@
             <h1>🎵 AI Music Genre Detector</h1>
             <p>Upload file audio dan biarkan AI mendeteksi genre musiknya</p>
         </div>
-
+        
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">🎧</div>
             <div class="upload-text">Klik atau drag & drop file audio di sini</div>
             <div class="file-types">Mendukung: MP3, WAV, OGG, M4A</div>
             <input type="file" id="audioFile" accept="audio/*">
         </div>
-
+        
         <div class="audio-player" id="audioPlayer">
             <div class="audio-info">
                 <div class="audio-icon">🎵</div>
@@ -30,16 +30,16 @@
             </div>
             <audio controls id="audioPreview" style="width: 100%;"></audio>
         </div>
-
+        
         <button class="analyze-btn" id="analyzeBtn" disabled>
             🤖 Analisis Genre dengan AI
         </button>
-
+        
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <p>AI sedang menganalisis audio...</p>
         </div>
-
+        
         <div class="results" id="results">
             <h2>🎯 Hasil Deteksi Genre</h2>
             <div id="genreResults"></div>
@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
